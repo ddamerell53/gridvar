@@ -22,6 +22,7 @@
         options: {
             cellWidth: 12,
             cellHeight: 12,
+            ylabel_click_color: "red",
             transitionDuration: 1500,
             legendStyles: {'stroke-width' : 1, 'stroke' : '#aaaaaa', 'swatchDimension' : 10},
             styles: {
@@ -1180,6 +1181,7 @@
             return $(self.element.children()[4]).children()[0];
         },
 
+
         _getGridLabelsSelector: function () {
             var self = this;
             return self.element.children()[3];
@@ -1261,6 +1263,7 @@
                 .attr('class', 'y ' + self._createCssClass('axis'))
                 .call(yAxis);
 
+                    
             // add a mouse event for when you hover over the gene labels
             gridLabels.select('.y.' + self._createCssClass('axis'))
                 .selectAll('text')
@@ -1274,6 +1277,9 @@
                 .attr('x', yAxisWidth - self.yAxisBuffer)
                 // mouse over & mouse clicked events
                 .on('click', function (d) {
+                	gridLabels.select('.y.' + self._createCssClass('axis')).selectAll('text').style('fill', 'black');
+                 
+                    d3.select(this).style('fill', self.options.ylabel_click_color);
                     self._trigger('rowLabelClicked', undefined, d);
                 })
                 .on('mouseover', function () {
