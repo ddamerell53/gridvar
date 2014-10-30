@@ -37,7 +37,8 @@
             },
             multipleLegendLines: {
                 include : false
-            }
+            },
+            xrotate: true
             /**
              * exportOptions: {
              *   style: 'http://localhost/GridVar/plugin/gridvar.css',
@@ -190,6 +191,10 @@
             if (!(_.isFunction(renderer) || _.isObject(renderer))) {
                 //is this s simple bg color?
                 if (renderer.substring(0, 1) === '#') {
+                    if ( renderer.substring(0,2) === '##') {
+                      renderer = renderer.substring(2, renderer.length);
+                    }
+                  
                     styleAndAttr.styles = {'stroke-width' : 0, 'opacity': 1, 'fill': renderer, 'stroke' : self.options.styles.stroke};
                     styleAndAttr.attrs = {'d' : self.renderers.rectRenderer};
                     return {'renderOpts': styleAndAttr, 'renderType': 'background' };
@@ -417,7 +422,7 @@
             }
             else if (key === 'histogramMapping') {
                 self._updateHistogram();
-            }   
+            }            
         },
 
         /**
@@ -853,7 +858,8 @@
                 tickValues = self._getTickValues(),
                 histogram, 
                 yAxis, 
-                xAxis;
+                xAxis,
+                xrotate = self.options.xrotate;
 
             x = d3.scale.linear()
                 .domain([scale, 0])
@@ -904,10 +910,12 @@
                 .attr('class', self._createCssClass('xaxis'))
                 .attr('transform', 'translate(0,' + y.rangeExtent()[1] + ')')
                 .call(xAxis);
+                
+            var transform = xrotate ? 'translate(-18,15)rotate(' + xrotate + ')' : 'translate(2,0)';
 
             // rotate the x axis labels
             histogram.select('.' + self._createCssClass('xaxis')).selectAll('text')
-                .attr('transform', 'translate(-18,15)rotate(-90)')
+                .attr('transform', transform)
                 .text(function (d) {
                     return (d * 100).toFixed(0) + '%';
                 })
@@ -980,7 +988,8 @@
                 scale = self._getHistogramScale(),
                 tickValues = self._getTickValues(),
                 histoX,
-                histogramXAxis;
+                histogramXAxis,
+                xrotate = self.options.xrotate;
 
             histoX = d3.scale.linear()
                 .domain([scale, 0])
@@ -1020,10 +1029,12 @@
                     return i * 4;
                 });
 
+            var transform = xrotate ? 'translate(-18,15)rotate(' + xrotate + ')' : 'translate(2,0)';   
+                
             d3.select('.' + self._createCssClass('xaxis'))
                 .call(histogramXAxis)
                 .selectAll('text')
-                .attr('transform', 'translate(-18,15)rotate(-90)')
+                .attr('transform', transform)
                 .text(function (d) {
                     return (d * 100).toFixed(0) + '%';
                 })
@@ -1214,7 +1225,8 @@
                 xAxis = d3.svg.axis().scale(xOrder).ticks(xOrder.length).orient('bottom'),
                 yAxis = d3.svg.axis().scale(y).ticks(y.length).orient('right'),
                 yAxisWidth = self.yAxisWidth,    //find longest gene name, calculate width
-                xAxisHeight = margin.bottom;  //15 char max on xAxis labels
+                xAxisHeight = margin.bottom,
+                xrotate = self.options.xrotate;  //15 char max on xAxis labels
 
             // creating the DOM elements here, but this needs a good deal of refactoring
             // to append the proper namespace and proper IDs
@@ -1292,9 +1304,11 @@
                     d3.select(this).style('fill', 'black');
                 });
 
+            var transform = xrotate ? 'translate(-14,10)rotate(' + xrotate + ')' : 'translate(2,0)';  
+                
             heatmap.select('.x.' + self._createCssClass('axis'))
                 .selectAll('text')
-                .attr('transform', 'translate(-14,10)rotate(-90)');
+                .attr('transform', transform);
 
             heatmap.select('.x.' + self._createCssClass('axis'))
                 .selectAll('text')
