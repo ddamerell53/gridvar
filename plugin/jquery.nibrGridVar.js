@@ -1223,6 +1223,7 @@
             // creates the heatmap SVG element
             var heatmap = d3.select(self._getHeatmapSelector()).append('svg')
                 .attr('class', self._createCssClass('heatmapCanvas'))
+                .attr('style', 'cursor:pointer')
                 .attr('width', width)
                 .attr('height', height + xAxisHeight)
                 .append('g')
@@ -1240,6 +1241,7 @@
                 .attr('class', self._createCssClass('gridLabels-canvas'))
                 .attr('width', yAxisWidth)
                 .attr('height', height + xAxisHeight)
+                .attr('style', 'cursor:pointer')
                 .append('g')
                 .attr('class', self._createCssClass('grid-label-rows'))
                 .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
