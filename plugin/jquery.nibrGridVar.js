@@ -1284,7 +1284,7 @@
                 })
                 .on('mouseover', function () {
                     // change the color on hover
-                    if(d3.select(this).style('fill').toString()!=self.options.ylabel_click_color.toString()){
+                    if(d3.select(this).style('fill').toString().replace(" ","")!=self.options.ylabel_click_color.toString().replace(" ","")){
                     
                     d3.select(this).style('fill', 'rgb(50,50,220)');
                     
@@ -1293,7 +1293,7 @@
                 })
                 .on('mouseout', function () {
                     // restore the color on hover
-                    if(d3.select(this).style('fill').toString()!=self.options.ylabel_click_color.toString()){
+                    if(d3.select(this).style('fill').toString().replace(" ","")!=self.options.ylabel_click_color.toString().replace(" ","")){
                     
                     d3.select(this).style('fill', 'black');
                     
