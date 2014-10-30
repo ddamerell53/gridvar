@@ -22,7 +22,8 @@
         options: {
             cellWidth: 12,
             cellHeight: 12,
-            ylabel_click_color: "red",
+            ylabel_click_color: 'rgb(255, 0, 0)',
+            xlabel_click_color: 'rgb(255, 0, 0)',
             transitionDuration: 1500,
             legendStyles: {'stroke-width' : 1, 'stroke' : '#aaaaaa', 'swatchDimension' : 10},
             styles: {
@@ -1278,17 +1279,25 @@
                 // mouse over & mouse clicked events
                 .on('click', function (d) {
                 	gridLabels.select('.y.' + self._createCssClass('axis')).selectAll('text').style('fill', 'black');
-                 
                     d3.select(this).style('fill', self.options.ylabel_click_color);
                     self._trigger('rowLabelClicked', undefined, d);
                 })
                 .on('mouseover', function () {
                     // change the color on hover
+                    if(d3.select(this).style('fill').toString()!=self.options.ylabel_click_color.toString()){
+                    
                     d3.select(this).style('fill', 'rgb(50,50,220)');
+                    
+                    }
+                    
                 })
                 .on('mouseout', function () {
                     // restore the color on hover
+                    if(d3.select(this).style('fill').toString()!=self.options.ylabel_click_color.toString()){
+                    
                     d3.select(this).style('fill', 'black');
+                    
+                    }
                 });
 
             // add a mouse event for when you hover over the tissue sample labels
@@ -1301,15 +1310,26 @@
                 })
                 // mouse over & mouse clicked events
                 .on('click', function (d) {
+                	grid.select('.x.' + self._createCssClass('axis')).selectAll('text').style('fill', 'black');
+                    d3.select(this).style('fill', self.options.xlabel_click_color);
                     self._trigger('columnLabelClicked', undefined, d);
                 })
                 .on('mouseover', function () {
                     // change the color on hover
+                    if(d3.select(this).style('fill').toString()!=self.options.xlabel_click_color.toString()){
+                    
                     d3.select(this).style('fill', 'rgb(50,50,220)');
+                    
+                    }
+                    
                 })
                 .on('mouseout', function () {
-                    // restore the color on hover
+                    // restore the color on hover - aslong as it hasn't just been clicked
+                    if(d3.select(this).style('fill').toString()!=self.options.xlabel_click_color.toString()){
+                    
                     d3.select(this).style('fill', 'black');
+                    
+                    }
                 });
 
             var transform = xrotate==true ? 'translate(-14,10)rotate(-90)' : 'translate(2,0)';  
