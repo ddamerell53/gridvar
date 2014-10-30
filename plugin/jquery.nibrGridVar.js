@@ -911,7 +911,7 @@
                 .attr('transform', 'translate(0,' + y.rangeExtent()[1] + ')')
                 .call(xAxis);
                 
-            var transform = xrotate ? 'translate(-18,15)rotate(' + xrotate + ')' : 'translate(2,0)';
+            var transform = xrotate ? 'translate(-18,15)rotate(-90)' : 'translate(2,0)';
 
             // rotate the x axis labels
             histogram.select('.' + self._createCssClass('xaxis')).selectAll('text')
@@ -1029,7 +1029,7 @@
                     return i * 4;
                 });
 
-            var transform = xrotate ? 'translate(-18,15)rotate(' + xrotate + ')' : 'translate(2,0)';   
+            var transform = xrotate==true ? 'translate(-18,15)rotate(-90)' : 'translate(2,0)';   
                 
             d3.select('.' + self._createCssClass('xaxis'))
                 .call(histogramXAxis)
@@ -1306,7 +1306,7 @@
                     d3.select(this).style('fill', 'black');
                 });
 
-            var transform = xrotate ? 'translate(-14,10)rotate(' + xrotate + ')' : 'translate(2,0)';  
+            var transform = xrotate==true ? 'translate(-14,10)rotate(-90)' : 'translate(2,0)';  
                 
             heatmap.select('.x.' + self._createCssClass('axis'))
                 .selectAll('text')
