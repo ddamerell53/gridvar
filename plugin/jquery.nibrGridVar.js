@@ -40,7 +40,8 @@
             multipleLegendLines: {
                 include : false
             },
-            xrotate: true
+            xrotate: true,
+			hide_x_labels: false
             /**
              * exportOptions: {
              *   style: 'http://localhost/GridVar/plugin/gridvar.css',
@@ -464,11 +465,12 @@
             // update the display names too
             t.select('.x.' + self._createCssClass('axis'))
                 .selectAll('text')
-                .attr('class', self._getWidgetBaseClass())
+                .attr('class', self._getWidgetBaseClass() + (self.options.hide_x_labels ? ' x-axis-hide' : '') )
                 .style('text-anchor', 'end')
                 .text(function (d) {
                     // display the label
-                    return columnIdToName[d] || d;
+                    //return columnIdToName[d] || d;
+					return 'Hello World';
                 });
 
         },
@@ -1247,7 +1249,7 @@
             // grid contains the cells and x-axis,
             var grid = heatmap.append('g');
             grid.append('g')
-                .attr('class', 'x ' + self._createCssClass('axis'))
+                .attr('class', 'x ' + self._createCssClass('axis') + (self.options.hide_x_labels ? ' x-axis-hide' : ''))
                 .attr('transform', 'translate(0,' + height + ')')
                 .call(xAxis);
 
@@ -1303,7 +1305,7 @@
             // add a mouse event for when you hover over the tissue sample labels
             grid.select('.x.' + self._createCssClass('axis'))
                 .selectAll('text')
-                .attr('class', self._getWidgetBaseClass())
+                .attr('class', self._getWidgetBaseClass() + (self.options.hide_x_labels ? ' x-axis-hide' : ''))
                 .text(function (d) {
                     // display the label
                     return columnIdToName[d] || d;
@@ -1340,7 +1342,7 @@
 
             heatmap.select('.x.' + self._createCssClass('axis'))
                 .selectAll('text')
-                .attr('class', self._getWidgetBaseClass())
+                .attr('class', self._getWidgetBaseClass() + (self.options.hide_x_labels ? ' x-axis-hide' : ''))
                 .style('text-anchor', 'end')
                 .text(function (d) {
                     // display the label
@@ -1410,31 +1412,41 @@
                 return;
             }
 
-            var SVG,
-                blobSVG,
-                XML = new XMLSerializer(),
-                formData = new FormData(),
-                saveAsFunction = window.saveAs || window.navigator.msSaveOrOpenBlob,
-                header = '<?xml version="1.0" standalone="no"?>' +
+            var SVG;
+            var blobSVG;
+            var XML = new XMLSerializer();
+            var formData = new FormData();
+		    var saveAsFunction = window.saveAs || window.navigator.msSaveOrOpenBlob;
+            var header = '<?xml version="1.0" standalone="no"?>' +
                         '\n<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
-                        '\n<svg xmlns="http://www.w3.org/2000/svg" version="1.1" ',
+                        '\n<svg xmlns="http://www.w3.org/2000/svg" version="1.1" ';
 
                 // serialization
-                legend = XML.serializeToString($(self._getLegendSelector().children[0]).children()[0]),
-                histogram = XML.serializeToString($(self._getHistogramSelector().children[0]).children()[0]),
-                gridlabels = XML.serializeToString($(self._getGridLabelsSelector().children[0]).children()[0]),
-                heatmap = XML.serializeToString($(self._getHeatmapSelector().children[0]).children()[0]),
+			var legend = XML.serializeToString($(self._getLegendSelector().children[0]).children()[0]);
+			var histogram = options.histogramMapping ? XML.serializeToString($(self._getHistogramSelector().children[0]).children()[0]) : null;
+			var gridlabels = XML.serializeToString($(self._getGridLabelsSelector().children[0]).children()[0]);
+			var heatmap = XML.serializeToString($(self._getHeatmapSelector().children[0]).children()[0]);
+				
+			/*var legend = $(self._getLegendSelector().children[0]).innerHTML;
+			var histogram = $(self._getHistogramSelector().children[0]).innerHTML;
+			var gridlabels = $(self._getGridLabelsSelector().children[0]).innerHTML;
+			var heatmap = $(self._getHeatmapSelector().children[0]).innerHTML;*/
 
-                // organization
-                buffer = 10,
-                histogramWidth = Math.ceil($(self._getHistogramSelector().children[0]).children()[0].getBBox().width),
-                histogramHeight = Math.ceil($(self._getHistogramSelector().children[0]).children()[0].getBBox().height),
-                gridLabelsWidth = Math.ceil($(self._getGridLabelsSelector().children[0]).children()[0].getBBox().width),
-                heatmapWidth = Math.ceil($(self._getHeatmapSelector().children[0]).children()[0].getBBox().width),
-                legendHeight = Math.ceil($(self._getLegendSelector().children[0]).children()[0].getBBox().height),
-                legendWidth = Math.ceil($(self._getLegendSelector().children[0]).children()[0].getBBox().width),
-                totalHeight = legendHeight + histogramHeight + buffer,
-                totalWidth = histogramWidth + gridLabelsWidth + buffer + (heatmapWidth > legendWidth ? heatmapWidth : legendWidth + buffer);
+			// organization
+			
+			var buffer = 10;
+			var histogramWidth = options.histogramMapping ? Math.ceil($(self._getHistogramSelector().children[0]).children()[0].getBBox().width) : 0;
+			var histogramHeight = options.histogramMapping ? Math.ceil($(self._getHistogramSelector().children[0]).children()[0].getBBox().height) : 0;
+			var gridLabelsWidth = Math.ceil($(self._getGridLabelsSelector().children[0]).children()[0].getBBox().width);
+			var heatmapWidth = Math.ceil($(self._getHeatmapSelector().children[0]).children()[0].getBBox().width);
+			var heatmapHeight = Math.ceil($(self._getHeatmapSelector().children[0]).children()[0].getBBox().height);
+			var legendHeight = Math.ceil($(self._getLegendSelector().children[0]).children()[0].getBBox().height);
+			var legendWidth = Math.ceil($(self._getLegendSelector().children[0]).children()[0].getBBox().width);
+			
+			var bboxHeight = Math.max(histogramHeight, heatmapHeight);
+			
+			var totalHeight = legendHeight + bboxHeight + buffer;
+			var totalWidth = histogramWidth + gridLabelsWidth + buffer + (heatmapWidth > legendWidth ? heatmapWidth : legendWidth + buffer);
 
             // styling
             $.ajax({
